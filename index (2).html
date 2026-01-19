@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Teer 00–99 FR Chart</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f2f2f2;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+}
+
+.container {
+    max-width: 900px;
+    margin: auto;
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+}
+
+textarea {
+    width: 100%;
+    height: 120px;
+    padding: 10px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+button {
+    margin-top: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.chart {
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 8px;
+}
+
+.cell {
+    background: #e6e6e6;
+    padding: 8px;
+    border-radius: 4px;
+    text-align: center;
+}
+
+.cell strong {
+    display: block;
+    font-size: 16px;
+}
+
+.active {
+    background-color: #b6f0b6;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>Teer 00–99 FR Chart</h1>
+
+    <p><b>Input format (one per line):</b><br>
+    81 10<br>
+    83 15<br>
+    81 5
+    </p>
+
+    <textarea id="inputData" placeholder="Enter number and FR value"></textarea>
+    <br>
+    <button onclick="generateChart()">Generate Chart</button>
+
+    <div id="chart" class="chart"></div>
+</div>
+
+<script>
+function generateChart() {
+    const input = document.getElementById("inputData").value.trim();
+    const chart = document.getElementById("chart");
+
+    let frValues = {};
+    for (let i = 0; i < 100; i++) {
+        frValues[i] = 0;
+    }
+
+    const lines = input.split("\n");
+    lines.forEach(line => {
+        const parts = line.trim().split(/\s+/);
+        if (parts.length === 2) {
+            const number = parseInt(parts[0], 10);
+            const fr = parseFloat(parts[1]);
+            if (!isNaN(number) && number >= 0 && number <= 99 && !isNaN(fr)) {
+                frValues[number] += fr;
+            }
+        }
+    });
+
+    chart.innerHTML = "";
+
+    for (let i = 0; i < 100; i++) {
+        const cell = document.createElement("div");
+        cell.className = "cell";
+        if (frValues[i] > 0) cell.classList.add("active");
+
+        const numText = i.toString().padStart(2, "0");
+        cell.innerHTML = `<strong>${numText}</strong>FR: ${frValues[i]}`;
+        chart.appendChild(cell);
+    }
+}
+</script>
+
+</body>
+</html>
